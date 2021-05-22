@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="./iconfont/iconfont.css">
+    <link rel="stylesheet" href="./style.css">
+    
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>   
+    <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
+    <script>
+        var cityid=101010100;       //默认城市id 为北京，三个全局变量
+        var sh_data=[];             
+        var polution;
+
+        $(document).ready(ajax);            
+
+        function ajax(){                                                //初始页面的ajax请求
+            var landscape = document.getElementById("landscape");
+
+            var tomorrow = document.getElementById("tomorrow_container");
+
+            var hour = document.getElementById("hour_container");
+
+            var year = new Date().getFullYear();
+            var month = new Date().getMonth()+1;
+            var date = new Date().getDate();
+
+            var day = document.getElementById("day_container");
+
+            var living = document.getElementById("living_container");
+
+            var max_tem=[];             //8日天气最高温度序列
+            var min_tem=[];             //8日最低
+            
+            $.ajax({
+                    url:"https://v0.yiketianqi.com/api?version=v62&appid=34439847&appsecret=a3gFpBEe&cityid="+cityid,  //小时天气，生活提示
+                    type:"get",
+                    success:function(data,status){
+                        console.log(data) 
+                        var pm = document.getElementById("pm");
+                        var hour_container = document.getElementById("hour_container");
+                        landscape.children[0].children[0].innerHTML = data.air;
+                        landscape.children[0].children[1].innerHTML = data.air_level;       //设置污染指数
+                        
+                        if (data.air<=50 && data.air>0) pm.style.backgroundColor="#A3D765";
+                        else if (data.air>50 && data.air<=100) pm.style.backgroundColor="#F0CC35";
+                        else pm.style.backgroundColor="F1AB62";
+                        landscape.children[1].children[0].children[0].innerHTML = data.tem+"°";
+                        landscape.children[1].children[0].children[1].innerHTML= data.wea;
+                        landscape.children[1].children[0].children[2].innerHTML = data.win+" "+data.win_speed;
+                        landscape.children[1].children[0].children[3].innerHTML = data.air_tips;        //设置主界面的天气
+                        
+                        for (var i=0;i<data.hours.length;i++){              //填入每小时的时间，图片
+                            hour_container.children[0].children[i].children[0].innerHTML=data.hours[i].hours;
+                            hour_container.children[0].children[i].children[1].src="./logo/"+data.hours[i].wea_img+".svg";
+                        }
+                    }         
+                })
+            $.ajax({
+                url:"https://www.tianqiapi.com/life/lifepro?appid=34439847&appsecret=a3gFpBEe&cityid="+cityid, //生活指数
+                type:"get",
+                success:function(response,status){
+                    // console.log(response);
+                    //绑定16个生活建议
+                    living.children[0].children[0].children[0].children[1].innerHTML = response.data.lukuang.level;
+                    sh_data[0] = response.data.lukuang.desc;
+                    living.children[0].children[0].children[1].children[1].innerHTML = response.data.chuanyi.level;
+                    sh_data[1] = response.data.chuanyi.desc;
+                    living.children[0].children[0].children[2].children[1].innerHTML = response.data.yusan.level;
+                    sh_data[2] = response.data.yusan.desc;
+                    living.children[0].children[0].children[3].children[1].innerHTML = response.data.ganmao.level;
+                    sh_data[3] = response.data.ganmao.desc;
+                    living.children[0].children[0].children[4].children[1].innerHTML = response.data.xiche.level;
+                    sh_data[4] = response.data.xiche.desc;
+                    living.children[0].children[0].children[5].children[1].innerHTML = response.data.yundong.level;
+                    sh_data[5] = response.data.yundong.desc;
+                    living.children[0].children[0].children[6].children[1].innerHTML = response.data.ziwaixian.level;
+                    sh_data[6] = response.data.ziwaixian.desc;
+                    living.children[0].children[0].children[7].children[1].innerHTML = response.data.diaoyu.level;
+                    sh_data[7] = response.data.diaoyu.desc;
+
+                    living.children[0].children[1].children[0].children[1].innerHTML = response.data.lvyou.level;
+                    sh_data[8] = response.data.diaoyu.desc;
+                    living.children[0].children[1].children[1].children[1].innerHTML = response.data.jiaotong.level;
+                    sh_data[9] = response.data.jiaotong.desc;
+                    living.children[0].children[1].children[2].children[1].innerHTML = response.data.wuran.level;
+                    sh_data[10] = response.data.wuran.desc;
+                    living.children[0].children[1].children[3].children[1].innerHTML = response.data.shushidu.level;
+                    sh_data[11] = response.data.shushidu.desc;
+                    living.children[0].children[1].children[4].children[1].innerHTML = response.data.liangshai.level;
+                    sh_data[12] = response.data.liangshai.desc;
+                    living.children[0].children[1].children[5].children[1].innerHTML = response.data.huazhuang.level;
+                    sh_data[13] = response.data.huazhuang.desc;
+                    living.children[0].children[1].children[6].children[1].innerHTML = response.data.chenlian.level;
+                    sh_data[14] = response.data.chenlian.desc;
+                    living.children[0].children[1].children[7].children[1].innerHTML = response.data.guomin.level;
+                    sh_data[15] = response.data.guomin.desc;
+
+                }
+            })
+
+            $.ajax({
+                url:"https://v0.yiketianqi.com/api?version=v10&appid=34439847&appsecret=a3gFpBEe&cityid="+cityid,//空气质量信息
+                type:"get",
+                success:function(response,status){
+                    polution = response;        //给全局，方便给点击以后的window赋值
+                    console.log(polution);
+                }
+            })
+
+            
+
+            $.ajax({
+                url:"https://v0.yiketianqi.com/api?version=v91&appid=34439847&appsecret=a3gFpBEe&cityid="+cityid, //七日+昨天天气
+                type:"get",
+                success:function(response1,status){ //先调用7日接口，成功后再调用昨天接口
+                    console.log(response1)
+                    $.ajax({
+                    url:"https://tianqiapi.com/api?version=history&appid=34439847&appsecret=a3gFpBEe&cityid="+cityid+"&year="+year+"&month="+month,//昨天
+                    type:"get",
+                    success:function(response2,status){
+                        console.log(response2);
+                        max_tem[0] = response2.data[response2.data.length-1].bWendu.split("°")[0];  //拿到昨天数据
+                        min_tem[0] = response2.data[response2.data.length-1].yWendu.split("°")[0];  //拿到昨天数据
+                        
+                        day_input(0,response2);         //
+
+                        for (var i=0;i<7;i++){
+                        max_tem[i+1]= response1.data[i].tem1;       //7天数据
+                        min_tem[i+1]=response1.data[i].tem2;        //7天数据
+                    }
+                    max_tem=max_tem.map(Number);        //7+1绘制echarts数据
+                    min_tem=min_tem.map(Number);        //7+1绘制echarts数据
+                    var max=max_tem[0];
+                    var min=min_tem[0];
+                    for (var x of max_tem){
+                        if (x>max) max=x; 
+                    }
+                    for (var x of min_tem){
+                        if (x<min) min=x;
+                    }
+                    
+                    //填充板块2的数据（今天＋明天）
+                    var str = response1.data[0].wea_day;
+
+                    str = str.indexOf("到")==-1?str:str.split("到")[1];
+                    tomorrow.children[0].children[0].children[1].innerHTML = response1.data[0].tem1+"/"+response1.data[0].tem2+"°";
+                    tomorrow.children[0].children[1].children[0].innerHTML = str;
+                    tomorrow.children[0].children[1].children[1].src="./logo/"+str+".svg";
+
+                    str = response1.data[1].wea_day;
+                    str = str.indexOf("到")==-1?str:str.split("到")[1];
+                    tomorrow.children[2].children[1].children[0].innerHTML = str;
+                    tomorrow.children[2].children[1].children[1].src = "./logo/"+str+".svg";
+                    tomorrow.children[2].children[0].children[1].innerHTML = response1.data[1].tem1+"/"+response1.data[1].tem2+"°";
+
+                    for (var i=0;i<response1.data.length;i++){
+                        day_input(i+1,response1);
+                    }
+
+                    //echart 绘制
+                    var myChart = echarts.init(document.getElementById('temp_curve'));
+
+                    var option = {
+                        grid:{
+                        x:0,
+                        y:0,
+                        x2:0,
+                        y2:0
+                        },
+                       
+                        xAxis: {
+                            show:false,
+                            data: [1,2,3,4,5,6,7,8],
+                        },
+                        yAxis: {
+                            show:false,
+                            type:'value',
+                            min:max+9,
+                            max:min-9
+                        },
+                        series: [{
+                            name: '最高温度',
+                            type: 'line',
+                            data: max_tem,
+                            label:{
+                            normal:{
+                                show:true,
+                                position:'top',
+                                formatter:'{c}°',
+
+                                textStyle:{
+                                fontSize:14
+                                },
+                            }
+                        },
+                            itemStyle:{
+                            normal:{
+                                color:'#FFB74D',
+                                lineStyle:{
+                                color:'#FFB74D'
+                                }
+                            }
+                            },
+                            symbol:'circle',
+                            symbolSize:8,
+                            smooth:true  
+                        },
+                        {
+                            name: '最低温度',
+                            type: 'line',
+                            data: min_tem,
+                            label:{
+                            
+                            normal:{
+                                show:true,
+                                position:'bottom',
+                                formatter:'{c}°',
+
+                                textStyle:{
+                                fontSize:14
+                                },
+                            }
+                            },
+                            itemStyle:{
+                            normal:{
+                                color:'#4FC3F7',
+                                lineStyle:{
+                                color:'#4FC3F7'
+                            }
+                            }
+                            
+                            },
+                            symbol:'circle',    //圆心点
+                            symbolSize:8,       //大小
+                            smooth:true
+                        }]
+                    };
+                    myChart.setOption(option);
+                        }
+                    })
+                    
+               
+                }
+            })
+
+            $.ajax({
+                url:"https://v0.yiketianqi.com/api/worldchina?appid=34439847&appsecret=a3gFpBEe&cityid="+cityid,
+                type:"get",
+                success:function(response,status){
+                    // console.log(response)
+                    for(var i=0;i<24;i++){
+                        hour.children[0].children[i].children[0].innerHTML = response.hours[i].time;
+                        hour.children[0].children[i].children[2].innerHTML = response.hours[i].tem+"°";
+                    }
+                    
+                }
+            })
+           
+
+            function day_input(i,response){
+                    if (response.data.length>7){    //如果数据大于7条，则表明是昨天数据
+                        day.children[0].children[i].children[1].innerHTML = (month<10?"0"+month:month)+"/"+((date-1)<10?"0"+(date-1):(date-1))
+                    var tianqi = response.data[response.data.length-1].tianqi;
+                    if (tianqi.indexOf("~")!=-1){
+                        var day_tq = tianqi.split("~")[0]=="扬沙"?"多云":tianqi.split("~")[0];  //排除扬沙
+                        var night_tq = tianqi.split("~")[1]=="扬沙"?"多云":tianqi.split("~")[1];
+                        console.log(day_tq+night_tq);
+                    }
+                    else {
+                        day_tq = tianqi;
+                        night_tq =tianqi;
+                    }
+                        day.children[2].children[i].children[2].innerHTML = response.data[response.data.length-1].fengxiang;
+                        day.children[2].children[i].children[3].innerHTML = response.data[response.data.length-1].fengli;
+                    }
+
+                    else {      //否则是7天数据
+                        day.children[0].children[i].children[1].innerHTML=response.data[i-1].date.split("-")[1]+"/"+response.data[i-1].date.split("-")[2]
+
+                        var day_tq = response.data[i-1].wea_day;
+                        if (day_tq.indexOf("到")!=-1) day_tq=day_tq.split("到")[1];
+                        var night_tq =response.data[i-1].wea_night;
+                        if (night_tq.indexOf("到")!=-1) night_tq=night_tq.split("到")[1];
+                        day.children[2].children[i].children[2].innerHTML = response.data[i-1].win[0];
+                        var win_speed = response.data[i-1].win_speed;
+                        if (win_speed.indexOf("4")!=-1){
+                            win_speed = "4级"
+                        }
+                        else win_speed ="3级"
+                        day.children[2].children[i].children[3].innerHTML = win_speed;
+                    }
+                    
+                    //以下为公共的天气语句
+                    
+                    
+                    day.children[0].children[i].children[2].innerHTML = day_tq;
+                    day.children[0].children[i].children[3].src = "./logo/"+day_tq+".svg";
+
+                    day.children[2].children[i].children[0].src = "./logo/"+"夜"+night_tq+".svg";
+                    day.children[2].children[i].children[1].innerHTML = night_tq;
+                   
+        }
+
+                //主天气的背景图根据早晚切换
+                var hours = new Date().getHours();
+                var bac_img = document.getElementById("bac_img");
+                var bac_img1 = document.getElementById("bac_img1");
+                var bac_img2 = document.getElementById("bac_img2");
+                var bac_img3 = document.getElementById("bac_img3");
+                if (hours>6 && hours<18) {
+                    bac_img1.style.backgroundImage="url(./back-img/day-1.png)";
+                    bac_img2.style.backgroundImage="url(./back-img/day-2.png)";
+                    bac_img3.style.backgroundImage="url(./back-img/day-3.png)";
+                    bac_img.style.backgroundImage="linear-gradient(rgb(59,189,255),rgb(71,234,255))";
+                }
+                else{
+                    bac_img1.style.backgroundImage="url(./back-img/night-1.png)";
+                    bac_img2.style.backgroundImage="url(./back-img/night-2.png)";
+                    bac_img3.style.backgroundImage="url(./back-img/night-3.png)";
+                    bac_img.style.backgroundImage="linear-gradient(rgb(49,57,120),rgb(86,154,197))";
+                }
+
+        }
+            
+    </script>
+
+
+   <script>
+       
+       window.onload= function(){
+           var search_line = document.getElementById("search_line");
+           var city = document.getElementById("city");
+           var city_list = document.getElementById("city_list");
+           var location = document.getElementById("location");
+           var container = document.getElementById("container");
+           var back_btn = document.getElementById("back_main");
+           var rubbish = document.getElementsByClassName("rubbish")[0];
+           var history = document.getElementsByClassName("history")[0];
+           var result = document.getElementById("result");
+           var hot_city = document.getElementById("hot_city");
+           
+           function history_appendAndcheck(cityName){
+                var node =document.createElement("li");
+                node.innerHTML = cityName;  
+                history.children[2].appendChild(node);
+
+                if (history.children[2].children.length>3){
+                    history.children[2].removeChild(history.children[2].children[0]);   //检测历史记录的数量  
+                }
+           }
+           function change_all(cityName){           //当选择了某一城市，改变主页面所有信息
+               $.ajax({
+                   url:"https://v0.yiketianqi.com/api?version=v62&appid=34439847&appsecret=a3gFpBEe&city="+cityName,
+                   type:"get",
+                   success:function(response,status){
+                       cityid = response.cityid;    // 改变cityid 为下面的全局ajax做准备,点击Hot_City一定可以生效
+                        history_appendAndcheck(cityName);
+                      
+                       location.children[0].children[1].innerHTML = cityName;  //改变地点
+                       ajax();
+                       back();
+                   }
+               })
+           }
+            for (let i=0;i<hot_city.children[1].children.length;i++){       //为每一个hot_city绑定事件
+                hot_city.children[1].children[i].onclick = function(){
+                    change_all(this.innerHTML);
+                }
+            }
+
+           function back(){
+               container.style.display="block";
+               search_line.children[0].children[0].value="";    //历史搜索栏清空1
+               result.style.visibility="hidden"; 
+               $(city).slideToggle("fast");             
+           }
+
+           $(location).click(function(){
+               $(city).slideToggle("fast");
+           })
+
+           rubbish.addEventListener("click",function(){
+                history.style.display = "none";
+           })
+
+           location.addEventListener("click",function(){
+               search_line.children[0].children[0].value="";   //历史搜索栏清空2
+               container.style.display="none";
+               city_list.style.opacity="1";         //city_list可见
+               history.style.display="block";
+               if (history.children[2].children.length==0) $(history).hide();
+               
+           })
+           back_btn.addEventListener("click",back)  //取消按钮
+           
+          
+          
+           search_line.addEventListener("click",function(){
+                city_list.style.opacity= "0";           //点击搜索栏,city_list不可见
+           },)
+           city_list.onclick = function(){
+                search_line.children[0].children[0].value="";   //历史搜索栏清空3
+               this.style.opacity = "1";            //点击city_list 使他可见
+               result.style.visibility="hidden";    //结果隐藏
+           }
+           search_line.children[0].children[0].oninput = function(){        //当搜索框发生变化时，就调用接口开始找
+                var cityName = this.value;
+                console.log(cityName);
+                var candidate_cityid;
+                $.ajax({                
+                    url:"https://v0.yiketianqi.com/api?version=v62&appid=34439847&appsecret=a3gFpBEe&city="+cityName,
+                    type:"get",
+                    success:function(response,status){
+                        console.log(response);
+                        var flag=true;
+                        for (var x in response){
+                            if (x=="errcode" || /\s+/.test(cityName) || cityName=="") {     //查找失败
+                                flag=false;
+                                break;
+                            }
+                        }
+                                        
+                        if (flag){                //查找成功
+                        result.innerHTML= cityName;
+                        result.style.visibility="visible";      //候选栏提示
+                        candidate_cityid = response.cityid;         //城市搜索到了，但是点了才更新
+
+                        if (history.children[2].children.length==0) $(history).show();      //历史记录检查
+
+                        history_appendAndcheck(cityName);
+                        
+                        
+                        }
+                    },
+                    
+                })
+                result.onclick = function(){
+                    cityid = candidate_cityid; //设置cityid
+                    location.children[0].children[1].innerHTML = cityName;
+                    ajax();
+                    this.style.visibility="hidden";
+                    back();
+                }
+                
+           }
+           history.children[0].addEventListener("click",function(){
+               let length = history.children[2].children.length;
+               for (var i=0;i<length;i++){
+                   history.children[2].removeChild(history.children[2].children[0]);
+               }
+               $(history).hide();
+           })
+
+           //生活提示
+           var body =  document.getElementsByTagName("body")[0];
+           var ul_1 = document.getElementsByClassName("first_page")[0];
+           var ul_2 = document.getElementsByClassName("second_page")[0];
+           var container = document.getElementById("container");
+           var cover_layer = document.getElementById("cover_layer");
+           var tip_window = document.getElementById("tip_window");
+           var btn = tip_window.children[1].children[1];
+
+           for (let i=0;i<ul_1.children.length;i++){
+                    ul_1.children[i].onclick = function(){
+                    show_tip_window(i,this.children[2].innerHTML);
+                    tip_window.children[1].children[0].innerHTML=sh_data[i];    //建议具体内容
+                    page_freeze();     
+            }
+            }
+           for (let i=0;i<ul_2.children.length;i++){
+                    ul_2.children[i].onclick = function(){
+                    show_tip_window(i+8,this.children[2].innerHTML);
+                    tip_window.children[1].children[0].innerHTML=sh_data[i+8];  //建议具体内容
+                    page_freeze();
+                }
+           }
+           function show_tip_window(i,title){
+               //将颜色记录
+                var color = ['rgb(164,173,224)','rgb(225,164,196)','rgb(193,164,224)','rgb(223,199,156)','rgb(181,230,168)','rgb(230,217,157)','rgb(219,173,160)','rgb(163,223,212)','rgb(237,172,150)','rgb(139,165,175)','rgb(178,138,144)','rgb(158,196,140)','rgb(166,186,204)','rgb(224,144,144)','rgb(135,197,221)','rgb(149,163,219)']
+                tip_window.children[0].style.backgroundColor=color[i];
+                tip_window.children[1].children[1].style.backgroundColor=color[i];
+                tip_window.children[0].innerHTML=title+"指数";
+                $(tip_window).fadeIn();
+
+           }
+           btn.onclick = function(){
+               
+               $(tip_window).fadeOut();
+               page_unfreeze();
+           }
+           
+           //pm提示窗口
+
+           var pm_window = document.getElementById("pm_window");
+           var pm = document.getElementById("pm");
+           var cancel_btn = pm_window.children[0].children[0];
+           pm.onclick = function(){
+               $(pm_window).fadeIn();
+               page_freeze();
+               pm_window.children[0].children[2].innerHTML=pm.children[0].innerHTML;
+               pm_window.children[0].children[3].innerHTML = pm.children[1].innerHTML;
+               
+               pm_window.children[1].children[0].children[0].innerHTML = polution.pm25;
+               pm_window.children[1].children[1].children[0].innerHTML = polution.pm10;
+               pm_window.children[1].children[2].children[0].innerHTML = polution.so2;
+               pm_window.children[1].children[3].children[0].innerHTML = polution.no2;
+               pm_window.children[1].children[4].children[0].innerHTML = polution.o3;
+               pm_window.children[1].children[5].children[0].innerHTML = polution.co;
+           }
+
+           cancel_btn.onclick = function(){
+                $(pm_window).fadeOut();
+                page_unfreeze();
+           }
+
+           function page_freeze(){
+                cover_layer.style.display="block";
+               container.classList.add("blur");
+               body.style.overflowY="hidden";
+           }
+           function page_unfreeze(){
+                cover_layer.style.display="none";
+                container.classList.remove("blur")
+                body.style.overflowY="scroll";
+           }
+           
+       }
+   </script>
+</head>         
+<body>
+    <div id="main_container">
+        <div id="city">
+            <i class="iconfont sousuo">&#xe946;</i>
+            
+            <div id="search_line">
+                <div style="border-bottom: 1px solid #eee;padding-bottom: 7px;">
+                <input type="text"  placeholder="搜索地区">
+                <span id="back_main">取消</span>
+                </div>
+
+                <div id="result" style="line-height: 22px; border-bottom: 1px solid #eee"></div>
+            </div>
+
+            <div id="city_list">
+            
+            <div class="history">
+                <i class="iconfont rubbish">&#xe603;</i>
+                <p class="title">历史记录</p>
+                <ul class="items">
+                    
+                </ul>
+            </div>
+            <div id="hot_city">
+                <p class="title">热门城市</p>
+                <ul class="items">
+                    <li>北京</li>
+                    <li>上海</li>
+                    <li>广州</li>
+                    <li>深圳</li>
+                    <li>郑州</li>
+                    <li>西安</li>
+                    <li>南京</li>
+                    <li>杭州</li>
+                    <li>武汉</li>
+                    <li>成都</li>
+                    <li>沈阳</li>
+                    <li>天津</li>
+                </ul>
+            </div>
+            </div>
+
+        </div>
+        <div id="cover_layer"></div>
+
+        <div id="container">
+            <span id="link_back"><i class="iconfont" style="font-size: 25px;">&#xe75b;</i></span>
+            <span id="share"><i class="iconfont" style="font-size: 20px;">&#xe61f;</i></span>
+
+            <div id="bac_img">
+            <div id="bac_img3">
+            <div id="bac_img2">
+            <div id="bac_img1">
+            <div id="location">
+                <p>
+                <span id="icon_location">
+                    <i class="iconfont" style="font-size: 18px;">&#xe640;</i>
+                </span>
+                <span> 北京</span>
+                </p>
+            </div>
+            <div id="landscape">
+                <div id="pm">
+                    <div id="air">52</div>
+                    <div id="air_level">良</div>
+                </div>
+                <div id="current_weather">
+                    <ul>
+                        <li style="font-size:58px;margin-bottom: 8px;margin-left: 8px;" id="c_temp">23</li>
+                        <li style="font-size:20px;margin-bottom: 5px;" id="c_wea">请</li>
+                        <li style="font-size:14px;margin-bottom: 55px;">西南风 1级</li>
+                        <li id="tip">现在温度比较合适</li>
+                    </ul>
+                </div>
+            </div>
+
+            </div>
+            </div>
+            </div>
+            </div>
+
+            <div id="tomorrow_container">
+                <ul id="today" >
+                    <li> <span>今天</span> <span>27/16°</span></li>
+                    <li> <span>多云</span> <img src="./logo/duoyun.svg"></li>
+                </ul>
+                <div id="split_bar"></div>
+                <ul id="tomorrow">
+                    <li> <span>明天</span> <span>27/16°</span></li>
+                    <li> <span>多云</span> <img src="./logo/duoyun.svg"></li>
+                </ul>
+            </div>
+
+            <div id="hour_container_wrapper">
+            <div id="hour_container">
+        
+                <ul id="hour_list">
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span >18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                        <li>
+                            <span class="time">22:00</span>
+                            <img src="./logo/duoyun.svg">
+                            <span>18°</span>
+                        </li>
+                </ul>
+            </div>
+            </div>
+
+            <div id="day_container_wrapper">
+            <div id="day_container">
+                <ul id="daytime_list">
+                    <li>
+                        <span class="day">昨天</span>
+                        <span class="date">05/13</span>
+                        <span class="weather">阴</span>
+                        <img src="./logo/duoyun.svg">
+                    </li>
+                    <li>
+                        <span class="day">昨天</span>
+                        <span class="date">05/13</span>
+                        <span class="weather">阴</span>
+                        <img src="./logo/duoyun.svg">
+                    </li>
+                    <li>
+                        <span class="day">昨天</span>
+                        <span class="date">05/13</span>
+                        <span class="weather">阴</span>
+                        <img src="./logo/duoyun.svg">
+                    </li>
+                    <li>
+                        <span class="day">昨天</span>
+                        <span class="date">05/13</span>
+                        <span class="weather">阴</span>
+                        <img src="./logo/duoyun.svg">
+                    </li>
+                    <li>
+                        <span class="day">昨天</span>
+                        <span class="date">05/13</span>
+                        <span class="weather">阴</span>
+                        <img src="./logo/duoyun.svg">
+                    </li>
+                    <li>
+                        <span class="day">昨天</span>
+                        <span class="date">05/13</span>
+                        <span class="weather">阴</span>
+                        <img src="./logo/duoyun.svg">
+                    </li>
+                    <li>
+                        <span class="day">昨天</span>
+                        <span class="date">05/13</span>
+                        <span class="weather">阴</span>
+                        <img src="./logo/duoyun.svg">
+                    </li>
+                    <li>
+                        <span class="day">昨天</span>
+                        <span class="date">05/13</span>
+                        <span class="weather">阴</span>
+                        <img src="./logo/duoyun.svg">
+                    </li>
+                </ul>
+                <ul id="temp_curve">
+                    
+                </ul>
+                <ul id="night_list">
+                    <li>
+                        <img src="./logo/duoyun.svg">
+                        <span class="weather">多云</span>
+                        <span class="wind">南风</span>
+                        <span class="wind">三级</span>
+                    </li>
+                    <li>
+                        <img src="./logo/duoyun.svg">
+                        <span class="weather">多云</span>
+                        <span class="wind">南风</span>
+                        <span class="wind">三级</span>
+                    </li>
+                    <li>
+                        <img src="./logo/duoyun.svg">
+                        <span class="weather">多云</span>
+                        <span class="wind">南风</span>
+                        <span class="wind">三级</span>
+                    </li>
+                    <li>
+                        <img src="./logo/duoyun.svg">
+                        <span class="weather">多云</span>
+                        <span class="wind">南风</span>
+                        <span class="wind">三级</span>
+                    </li>
+                    <li>
+                        <img src="./logo/duoyun.svg">
+                        <span class="weather">多云</span>
+                        <span class="wind">南风</span>
+                        <spa class="wind"n>三级</span>
+                    </li>
+                    <li>
+                        <img src="./logo/duoyun.svg">
+                        <span class="weather">多云</span>
+                        <span class="wind">南风</span>
+                        <span class="wind">三级</span>
+                    </li>
+                    <li>
+                        <img src="./logo/duoyun.svg">
+                        <span class="weather">多云</span>
+                        <span class="wind">南风</span>
+                        <span class="wind">三级</span>
+                    </li>
+                    <li>
+                        <img src="./logo/duoyun.svg">
+                        <span class="weather">多云</span>
+                        <span class="wind">南风</span>
+                        <span class="wind">三级</span>
+                    </li>
+                    
+                </ul>
+            </div>
+            </div>
+            <div id="living_container">
+                <div class="living_scroll">
+                    <ul class="first_page">
+                        <li>
+                            <span class="item item1"></span>
+                            <span class="content">1和6</span>
+                            <span class="title">路况</span>
+                        </li>
+                        <li>
+                            <span class="item item2"></span>
+                            <span class="content">1和6</span>
+                            <span class="title">穿衣</span>
+                        </li>
+                        <li>
+                            <span class="item item3"></span>
+                            <span class="content">1和6</span>
+                            <span class="title">雨伞</span>
+                        </li>
+                        <li>
+                            <span class="item item4"></span>
+                            <span class="content">1和6</span>
+                            <span class="title">感冒</span>
+                        </li>
+                        <li>
+                            <span class="item item5"></span>
+                            <span class="content">1和6</span>
+                            <span class="title">洗车</span>
+                        </li>
+                        <li>
+                            <span class="item item6"></span>
+                            <span>较适宜</span>
+                            <span class="title">运动</span>
+                        </li>
+                        <li>
+                            <span class="item item7"></span>
+                            <span class="content">1和6</span>
+                            <span class="title">防晒</span>
+                        </li>
+                        <li>
+                            <span class="item item8"></span>
+                            <span class="content">1和6</span>
+                            <span class="title">钓鱼</span>
+                        </li>
+                    </ul>
+                    <ul class="second_page">
+                        <li>
+                            <span class="item item9"></span>
+                            <span class="content">1和6</span>
+                            <span class="title">旅游</span>
+                        </li>
+                        <li>
+                            <span class="item item10"></span>
+                            <span class="content">1和6</span>
+                            <span class="title">交通</span>
+                        </li>
+                        <li>
+                            <span class="item item11"></span>
+                            <span class="content">1和6</span>
+                            <span class="title" style="display:flex; ">空气污染扩散条件</span>
+                        </li>
+                        <li style="border-right: none;">
+                            <span class="item item12"></span>
+                            <span class="content">1和6</span>
+                            <span class="title">舒适度</span>
+                        </li>
+                        <li>
+                            <span class="item item13"></span>
+                            <span class="content">1和6</span>
+                            <span class="title">晾晒</span>
+                        </li>
+                        <li>
+                            <span class="item item14"></span>
+                            <span class="content">1和6</span>
+                            <span class="title">化妆</span>
+                        </li>
+                        <li>
+                            <span class="item item15"></span>
+                            <span class="content">1和6</span>
+                            <span class="title">晨练</span>
+                        </li>
+                        <li style="border:none">
+                            <span class="item item16"></span>
+                            <span class="content">1和6</span>
+                            <span class="title">过敏</span>
+                        </li>
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+
+        <div id="tip_window">
+            <p class="title">穿衣指数</p>
+            <div class="content">
+                <p class="text">建议作战T恤</p>
+                <button>我知道了</button> 
+            </div>
+        </div>
+
+        <div id="pm_window">
+            <div class="main_content">
+                <i class="iconfont">&#xe615;</i>
+                <span>空气质量指数</span>
+                <span class="air">65</span>
+                <span class="level">良</span>
+            </div>
+            <ul id="chemical">
+                <li>
+                    <span class="value">35</span>
+                    <span class="type">PM2.5</span>
+                </li>
+                <li>
+                    <span class="value">35</span>
+                    <span class="type">PM10</span>
+                </li>
+                <li>
+                    <span class="value">35</span>
+                    <span class="type">SO2</span>
+                </li>
+                <li>
+                    <span class="value">35</span>
+                    <span class="type">NO2</span>
+                </li>
+                <li>
+                    <span class="value">35</span>
+                    <span class="type">O3</span>
+                </li>
+                <li>
+                    <span class="value">35</span>
+                    <span class="type">CO</span>
+                </li>
+                
+                
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,135 @@
+{
+  "id": "2364516",
+  "name": "JD",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "10995993",
+      "name": "叉",
+      "font_class": "cha",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "1314338",
+      "name": "垃圾箱",
+      "font_class": "lajixiang",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "7708039",
+      "name": "分享",
+      "font_class": "fenxiang",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "8797977",
+      "name": "更多",
+      "font_class": "gengduo",
+      "unicode": "e7ce",
+      "unicode_decimal": 59342
+    },
+    {
+      "icon_id": "11813348",
+      "name": "风车",
+      "font_class": "fengche",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    },
+    {
+      "icon_id": "13899778",
+      "name": "房子，首页",
+      "font_class": "ziyuan",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "19684512",
+      "name": "火",
+      "font_class": "fire",
+      "unicode": "eb51",
+      "unicode_decimal": 60241
+    },
+    {
+      "icon_id": "1410460",
+      "name": "phone",
+      "font_class": "phone",
+      "unicode": "e6ad",
+      "unicode_decimal": 59053
+    },
+    {
+      "icon_id": "10918080",
+      "name": "bilibili-line",
+      "font_class": "bilibili-line",
+      "unicode": "e75d",
+      "unicode_decimal": 59229
+    },
+    {
+      "icon_id": "4770753",
+      "name": "下三角",
+      "font_class": "xiasanjiao",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "14553257",
+      "name": "right-arrow",
+      "font_class": "right-arrow",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "128659",
+      "name": "camera",
+      "font_class": "camera",
+      "unicode": "e67f",
+      "unicode_decimal": 59007
+    },
+    {
+      "icon_id": "722171",
+      "name": "arrow-left",
+      "font_class": "previewleft",
+      "unicode": "e75b",
+      "unicode_decimal": 59227
+    },
+    {
+      "icon_id": "722172",
+      "name": "arrow-right",
+      "font_class": "previewright",
+      "unicode": "e75c",
+      "unicode_decimal": 59228
+    },
+    {
+      "icon_id": "2207679",
+      "name": "icon-location",
+      "font_class": "location",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "5326775",
+      "name": "shopping cart",
+      "font_class": "shoppingcart",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "8827267",
+      "name": "search",
+      "font_class": "search",
+      "unicode": "e946",
+      "unicode_decimal": 59718
+    },
+    {
+      "icon_id": "16736214",
+      "name": "icon_arrow down",
+      "font_class": "icon_arrowdown",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    }
+  ]
+}
