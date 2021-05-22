@@ -37,7 +37,7 @@
             var min_tem=[];             //8日最低
             
             $.ajax({
-                    url:"https://v0.yiketianqi.com/api?version=v62&appid=34439847&appsecret=a3gFpBEe&cityid="+cityid,  //小时天气，生活提示
+                    url:"https://v0.yiketianqi.com/api?version=v62&appid=67857994&appsecret=890JGU0A&cityid="+cityid,  //小时天气，生活提示
                     type:"get",
                     success:function(data,status){
                         console.log(data) 
@@ -61,7 +61,7 @@
                     }         
                 })
             $.ajax({
-                url:"https://www.tianqiapi.com/life/lifepro?appid=34439847&appsecret=a3gFpBEe&cityid="+cityid, //生活指数
+                url:"https://www.tianqiapi.com/life/lifepro?appid=67857994&appsecret=890JGU0A&cityid="+cityid, //生活指数
                 type:"get",
                 success:function(response,status){
                     // console.log(response);
@@ -104,7 +104,7 @@
             })
 
             $.ajax({
-                url:"https://v0.yiketianqi.com/api?version=v10&appid=34439847&appsecret=a3gFpBEe&cityid="+cityid,//空气质量信息
+                url:"https://v0.yiketianqi.com/api?version=v10&appid=67857994&appsecret=890JGU0A&cityid="+cityid,//空气质量信息
                 type:"get",
                 success:function(response,status){
                     polution = response;        //给全局，方便给点击以后的window赋值
@@ -115,12 +115,12 @@
             
 
             $.ajax({
-                url:"https://v0.yiketianqi.com/api?version=v91&appid=34439847&appsecret=a3gFpBEe&cityid="+cityid, //七日+昨天天气
+                url:"https://v0.yiketianqi.com/api?version=v91&appid=67857994&appsecret=890JGU0A&cityid="+cityid, //七日+昨天天气
                 type:"get",
                 success:function(response1,status){ //先调用7日接口，成功后再调用昨天接口
                     console.log(response1)
                     $.ajax({
-                    url:"https://tianqiapi.com/api?version=history&appid=34439847&appsecret=a3gFpBEe&cityid="+cityid+"&year="+year+"&month="+month,//昨天
+                    url:"https://tianqiapi.com/api?version=history&appid=67857994&appsecret=890JGU0A&cityid="+cityid+"&year="+year+"&month="+month,//昨天
                     type:"get",
                     success:function(response2,status){
                         console.log(response2);
@@ -249,7 +249,7 @@
             })
 
             $.ajax({
-                url:"https://v0.yiketianqi.com/api/worldchina?appid=34439847&appsecret=a3gFpBEe&cityid="+cityid,
+                url:"https://v0.yiketianqi.com/api/worldchina?appid=67857994&appsecret=890JGU0A&cityid="+cityid,
                 type:"get",
                 success:function(response,status){
                     // console.log(response)
@@ -355,7 +355,7 @@
            }
            function change_all(cityName){           //当选择了某一城市，改变主页面所有信息
                $.ajax({
-                   url:"https://v0.yiketianqi.com/api?version=v62&appid=34439847&appsecret=a3gFpBEe&city="+cityName,
+                   url:"https://v0.yiketianqi.com/api?version=v62&appid=67857994&appsecret=890JGU0A&city="+cityName,
                    type:"get",
                    success:function(response,status){
                        cityid = response.cityid;    // 改变cityid 为下面的全局ajax做准备,点击Hot_City一定可以生效
@@ -413,7 +413,7 @@
                 console.log(cityName);
                 var candidate_cityid;
                 $.ajax({                
-                    url:"https://v0.yiketianqi.com/api?version=v62&appid=34439847&appsecret=a3gFpBEe&city="+cityName,
+                    url:"https://v0.yiketianqi.com/api?version=v62&appid=67857994&appsecret=890JGU0A&city="+cityName,
                     type:"get",
                     success:function(response,status){
                         console.log(response);
